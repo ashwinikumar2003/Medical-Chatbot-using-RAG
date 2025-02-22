@@ -6,4 +6,4 @@ system_prompt = (
     "Use three to four sentences maximum and keep the answer concise. "
     "\n\n"
     "{context}"
-    )
+)

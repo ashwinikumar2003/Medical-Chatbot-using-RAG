@@ -2,7 +2,7 @@ from flask import Flask, render_template, jsonify, request
 from src.helper import download_hf_embeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_groq import ChatGroq
-from langchain.chains import create_retrieval_chain
+from langchain.chains.retrieval import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
@@ -39,7 +39,14 @@ chat_model = ChatGroq(
     model_name="llama3-8b-8192",
 )
 
-question_answer_chain = create_stuff_documents_chain(chat_model, system_prompt)
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        ("human", "{input}"),
+    ]
+)
+
+question_answer_chain = create_stuff_documents_chain(llm=chat_model, prompt=prompt)
 rag_chain = create_retrieval_chain(retriever, question_answer_chain)
 
 
